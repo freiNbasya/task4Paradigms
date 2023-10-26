@@ -10,11 +10,11 @@ class Dll1 {
 public:
 	typedef std::string(*encrypt_ptr_t)(std::string, int);
 	typedef std::string(*decrypt_ptr_t)(std::string, int);
-	HINSTANCE handle;
+	HINSTANCE handle = LoadLibrary(TEXT("Dll1.dll"));
 	decrypt_ptr_t decrypt_ptr;
 	encrypt_ptr_t encrypt_ptr;
-	Dll1() : handle(nullptr), decrypt_ptr(nullptr), encrypt_ptr(nullptr) {
-		handle = LoadLibrary(TEXT("Dll1.dll"));
+	Dll1() : decrypt_ptr(nullptr), encrypt_ptr(nullptr) {
+		
 		if (handle != nullptr || handle != INVALID_HANDLE_VALUE) {
 			decrypt_ptr = (decrypt_ptr_t)GetProcAddress(handle, "decrypt");
 			encrypt_ptr = (encrypt_ptr_t)GetProcAddress(handle, "encrypt");
@@ -42,7 +42,13 @@ public:
 	}
 };
 
-class FileRW {
+class IFileRW {
+public:
+	virtual void Read(std::string command, std::string name, int key) = 0;
+	virtual void Write(std::string command, std::string name) = 0;
+};
+
+class FileRW : public IFileRW{
 public:
 	Dll1 cipher;
 	std::vector<std::string> bufferD;
@@ -95,9 +101,9 @@ public:
 
 int main() {
 
-	FileRW file_cipher;
-	file_cipher.Read("1", "C:/Labs_Kse/Paradigms of Programming/task4/text.txt", 5);
-	file_cipher.Write("1", "C:/Labs_Kse/Paradigms of Programming/task4/text.txt");
+	IFileRW* file_cipher = new FileRW;
+	file_cipher->Read("1", "C:/Labs_Kse/Paradigms of Programming/task4/text.txt", 5);
+	file_cipher->Write("1", "C:/Labs_Kse/Paradigms of Programming/task4/text.txt");
 	return 0;
 }
 

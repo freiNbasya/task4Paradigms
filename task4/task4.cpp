@@ -44,6 +44,7 @@ public:
 
 class IFileRW {
 public:
+	virtual ~IFileRW() {}
 	virtual void Read(std::string command, std::string name, int key) = 0;
 	virtual void Write(std::string command, std::string name) = 0;
 };
@@ -104,6 +105,7 @@ int main() {
 	IFileRW* file_cipher = new FileRW;
 	file_cipher->Read("1", "C:/Labs_Kse/Paradigms of Programming/task4/text.txt", 5);
 	file_cipher->Write("1", "C:/Labs_Kse/Paradigms of Programming/task4/text.txt");
+	delete file_cipher;
 	return 0;
 }
 
